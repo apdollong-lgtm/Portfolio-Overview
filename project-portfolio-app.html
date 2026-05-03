@@ -887,6 +887,8 @@ let projects = JSON.parse(localStorage.getItem('spm_projects') || '[]');
 let currentPage = 'dashboard';
 let currentModal = null;
 let cloudReady = false;
+let cloudInitStartedAt = 0;
+let lastLocalChangeAt = 0;
 
 const API_KEY_HINT = ""; // handled server-side via cors proxy
 
@@ -902,13 +904,29 @@ function getPortfolioState() {
   };
 }
 
+function markLocalChange() {
+  lastLocalChangeAt = Date.now();
+}
+
+function setProjects(nextProjects) {
+  projects = nextProjects;
+  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  markLocalChange();
+}
+
+function setVisionMission(vision, mission) {
+  localStorage.setItem('spm_vision', vision || '');
+  localStorage.setItem('spm_mission', mission || '');
+  markLocalChange();
+}
+
 function applyPortfolioState(state) {
   if (!state) return;
-  if (typeof state.vision === 'string') localStorage.setItem('spm_vision', state.vision);
-  if (typeof state.mission === 'string') localStorage.setItem('spm_mission', state.mission);
+  if (typeof state.vision === 'string' || typeof state.mission === 'string') {
+    setVisionMission(state.vision || '', state.mission || '');
+  }
   if (Array.isArray(state.projects)) {
-    projects = state.projects;
-    localStorage.setItem('spm_projects', JSON.stringify(projects));
+    setProjects(state.projects);
   }
 }
 
@@ -921,18 +939,20 @@ function syncToGoogleSheet() {
 
 function initializeCloudSync() {
   if (!canUseAppsScript()) return;
+  cloudInitStartedAt = Date.now();
   google.script.run
     .withSuccessHandler(({ data }) => {
       const hasLocalData = projects.length || localStorage.getItem('spm_vision') || localStorage.getItem('spm_mission');
       const hasCloudData = data && (data.projects?.length || data.vision || data.mission);
+      const localChangedDuringInit = lastLocalChangeAt > cloudInitStartedAt;
 
-      if (hasCloudData) {
+      if (hasCloudData && !localChangedDuringInit) {
         applyPortfolioState(data);
       }
 
       cloudReady = true;
 
-      if (!hasCloudData && hasLocalData) {
+      if (localChangedDuringInit || (!hasCloudData && hasLocalData)) {
         syncToGoogleSheet();
       }
 
@@ -965,8 +985,7 @@ function switchPage(page) {
 function saveVisionMission() {
   const v = document.getElementById('vision-input').value.trim();
   const m = document.getElementById('mission-input').value.trim();
-  if (v) localStorage.setItem('spm_vision', v);
-  if (m) localStorage.setItem('spm_mission', m);
+  setVisionMission(v, m);
   renderVisionMission();
   syncToGoogleSheet();
 }
@@ -1029,8 +1048,7 @@ function saveProject(status) {
   const p = collectForm();
   if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
   p.status = status;
-  projects.push(p);
-  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  setProjects([...projects, p]);
   syncToGoogleSheet();
   clearForm();
   switchPage('dashboard');
@@ -1041,8 +1059,7 @@ async function saveAndAnalyze() {
   const p = collectForm();
   if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
   p.status = 'review';
-  projects.push(p);
-  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  setProjects([...projects, p]);
   syncToGoogleSheet();
   clearForm();
   switchPage('analysis');
@@ -1097,8 +1114,7 @@ function renderDashboard() {
 
 function deleteProject(i) {
   if (!confirm('ลบโครงการนี้?')) return;
-  projects.splice(i,1);
-  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  setProjects(projects.filter((_, index) => index !== i));
   syncToGoogleSheet();
   renderDashboard();
 }
@@ -1132,8 +1148,10 @@ function openModal(i) {
     </div>`).join('');
 
   document.getElementById('modal-approve-btn').onclick = () => {
-    projects[i].status = 'approved';
-    localStorage.setItem('spm_projects', JSON.stringify(projects));
+    const updated = projects.map((project, index) => (
+      index === i ? { ...project, status: 'approved' } : project
+    ));
+    setProjects(updated);
     syncToGoogleSheet();
     closeModal(); renderDashboard();
   };
