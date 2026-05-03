@@ -207,7 +207,30 @@
   }
   .btn-teal:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,212,191,0.3); }
 
-  .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+.btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+
+  .sync-status {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 200;
+    min-width: 220px;
+    max-width: 360px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(10,22,40,0.92);
+    color: var(--white);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+    display: none;
+  }
+
+  .sync-status.show { display: block; }
+  .sync-status.syncing { border-color: rgba(45,212,191,0.35); }
+  .sync-status.success { border-color: rgba(34,197,94,0.35); }
+  .sync-status.error { border-color: rgba(239,68,68,0.45); }
 
   /* ── BADGES ── */
   .badge-status {
@@ -879,6 +902,8 @@
   </div>
 </div>
 
+<div class="sync-status" id="sync-status"></div>
+
 <script>
 // ══════════════════════════════════════
 // STATE
@@ -920,6 +945,22 @@ function setVisionMission(vision, mission) {
   markLocalChange();
 }
 
+function setSyncStatus(message, state = 'syncing') {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = `sync-status show ${state}`;
+}
+
+function clearSyncStatus(delay = 2500) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  window.setTimeout(() => {
+    el.className = 'sync-status';
+    el.textContent = '';
+  }, delay);
+}
+
 function applyPortfolioState(state) {
   if (!state) return;
   if (typeof state.vision === 'string' || typeof state.mission === 'string') {
@@ -932,9 +973,45 @@ function applyPortfolioState(state) {
 
 function syncToGoogleSheet() {
   if (!canUseAppsScript() || !cloudReady) return;
+  setSyncStatus('กำลังซิงก์ข้อมูลไป Google Sheet...', 'syncing');
   google.script.run
-    .withFailureHandler(err => console.error('Google Sheet sync failed', err))
+    .withSuccessHandler(() => {
+      setSyncStatus('ซิงก์ข้อมูลกับ Google Sheet สำเร็จ', 'success');
+      clearSyncStatus();
+    })
+    .withFailureHandler(err => {
+      console.error('Google Sheet sync failed', err);
+      const message = err && err.message ? err.message : 'ไม่สามารถซิงก์ข้อมูลกับ Google Sheet ได้';
+      setSyncStatus(`ซิงก์ไม่สำเร็จ: ${message}`, 'error');
+    })
     .savePortfolio(getPortfolioState());
+}
+
+function appendProjectToGoogleSheet(project, onSuccess) {
+  if (!canUseAppsScript() || !cloudReady) {
+    if (onSuccess) onSuccess();
+    return;
+  }
+
+  setSyncStatus('กำลังบันทึกโครงการใหม่ไป Google Sheet...', 'syncing');
+  google.script.run
+    .withSuccessHandler(() => {
+      setSyncStatus('บันทึกโครงการลง Google Sheet สำเร็จ', 'success');
+      clearSyncStatus();
+      if (onSuccess) onSuccess();
+    })
+    .withFailureHandler(err => {
+      console.error('Append project failed', err);
+      const message = err && err.message ? err.message : 'ไม่สามารถบันทึกโครงการลง Google Sheet ได้';
+      setSyncStatus(`บันทึกโครงการไม่สำเร็จ: ${message}`, 'error');
+      alert(`บันทึกลง Google Sheet ไม่สำเร็จ\n${message}`);
+      if (onSuccess) onSuccess();
+    })
+    .appendProject(
+      project,
+      localStorage.getItem('spm_vision') || '',
+      localStorage.getItem('spm_mission') || ''
+    );
 }
 
 function initializeCloudSync() {
@@ -1049,7 +1126,7 @@ function saveProject(status) {
   if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
   p.status = status;
   setProjects([...projects, p]);
-  syncToGoogleSheet();
+  appendProjectToGoogleSheet(p);
   clearForm();
   switchPage('dashboard');
   renderDashboard();
@@ -1060,7 +1137,7 @@ async function saveAndAnalyze() {
   if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
   p.status = 'review';
   setProjects([...projects, p]);
-  syncToGoogleSheet();
+  appendProjectToGoogleSheet(p);
   clearForm();
   switchPage('analysis');
   await runAIAnalysis();

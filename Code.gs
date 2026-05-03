@@ -96,6 +96,32 @@ function savePortfolio(payload) {
   };
 }
 
+function appendProject(project, vision, mission) {
+  const spreadsheet = createSpreadsheetIfNeeded_();
+  ensureSchema_(spreadsheet);
+
+  const metadataSheet = spreadsheet.getSheetByName(APP_CONFIG.sheets.metadata);
+  const projectsSheet = spreadsheet.getSheetByName(APP_CONFIG.sheets.projects);
+  const normalized = normalizeProject_(project || {});
+
+  upsertMetadata_(metadataSheet, String(vision || ''), String(mission || ''));
+
+  if (!normalized.name) {
+    throw new Error('Project name is required');
+  }
+
+  const row = PROJECT_HEADERS.map((header) => normalized[header] || '');
+  projectsSheet.appendRow(row);
+
+  return {
+    ok: true,
+    spreadsheetId: spreadsheet.getId(),
+    spreadsheetUrl: spreadsheet.getUrl(),
+    rowCount: Math.max(projectsSheet.getLastRow() - 1, 0),
+    savedAt: new Date().toISOString(),
+  };
+}
+
 const PROJECT_HEADERS = [
   'id',
   'name',
@@ -149,11 +175,7 @@ function createSpreadsheetIfNeeded_() {
 function ensureSchema_(spreadsheet) {
   const metadataSheet = getOrCreateSheet_(spreadsheet, APP_CONFIG.sheets.metadata);
   if (metadataSheet.getLastRow() === 0) {
-    metadataSheet.getRange(1, 1, 1, 2).setValues([['key', 'value']]);
-    metadataSheet.getRange(2, 1, 2, 2).setValues([
-      ['vision', ''],
-      ['mission', ''],
-    ]);
+    upsertMetadata_(metadataSheet, '', '');
   }
 
   const projectsSheet = getOrCreateSheet_(spreadsheet, APP_CONFIG.sheets.projects);
@@ -192,4 +214,13 @@ function normalizeProject_(project) {
     normalized[header] = project && project[header] != null ? String(project[header]) : '';
   });
   return normalized;
+}
+
+function upsertMetadata_(metadataSheet, vision, mission) {
+  metadataSheet.clearContents();
+  metadataSheet.getRange(1, 1, 1, 2).setValues([['key', 'value']]);
+  metadataSheet.getRange(2, 1, 2, 2).setValues([
+    ['vision', vision],
+    ['mission', mission],
+  ]);
 }
