@@ -1054,6 +1054,12 @@ function switchPage(page) {
   });
   currentPage = page;
   if (page === 'dashboard') renderDashboard();
+  if (page === 'new-project') {
+    window.setTimeout(() => {
+      const nameInput = document.getElementById('f-name');
+      if (nameInput) nameInput.focus();
+    }, 50);
+  }
 }
 
 // ══════════════════════════════════════
@@ -1550,7 +1556,7 @@ renderDashboard();
 initializeCloudSync();
 
 // Demo data prompt
-if (!projects.length) {
+if (false && !projects.length) {
   setTimeout(() => {
     if (confirm('ต้องการโหลดข้อมูลตัวอย่าง (Demo Projects) เพื่อทดสอบระบบ?')) {
       const demo = [
