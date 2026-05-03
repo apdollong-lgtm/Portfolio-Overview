@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Project Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --navy-light: #1d3461;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5e6b8;
+    --teal: #2dd4bf;
+    --teal-dim: #14b8a6;
+    --red: #ef4444;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --white: #f8fafc;
+    --gray: #94a3b8;
+    --border: rgba(201,168,76,0.2);
+    --glass: rgba(17,34,64,0.7);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(201,168,76,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(45,212,191,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(10,22,40,0.9);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 0; height: 64px;
+  }
+
+  .nav-brand {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    margin-right: auto;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .nav-brand-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .nav-tabs {
+    display: flex; gap: 4px;
+  }
+
+  .nav-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none; background: transparent;
+    color: var(--gray);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem; cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .nav-tab.active {
+    background: rgba(201,168,76,0.12);
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .nav-tab:hover:not(.active) {
+    color: var(--white); background: rgba(255,255,255,0.05);
+  }
+
+  .nav-tab .badge {
+    position: absolute; top: 4px; right: 8px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--gold); color: var(--navy);
+    font-size: 0.6rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+  .page.active { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HEADINGS ── */
+  .page-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 1.75rem; font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .page-sub {
+    color: var(--gray); font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+  }
+
+  .card-title {
+    font-size: 1rem; font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+  .col-span-2 { grid-column: span 2; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 1.25rem; }
+
+  .form-label {
+    display: block; font-size: 0.85rem; font-weight: 600;
+    color: var(--gold-light); margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--white);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.3); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.07);
+  }
+
+  .form-select option { background: var(--navy-mid); color: var(--white); }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 10px 22px; border-radius: 10px;
+    font-family: 'Sarabun', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--gray);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .btn-teal {
+    background: linear-gradient(135deg, var(--teal-dim), var(--teal));
+    color: var(--navy);
+  }
+  .btn-teal:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,212,191,0.3); }
+
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+
+  /* ── BADGES ── */
+  .badge-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 0.75rem; font-weight: 600;
+  }
+
+  .badge-draft { background: rgba(148,163,184,0.15); color: var(--gray); }
+  .badge-review { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .badge-approved { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-rejected { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  /* ── PROJECT LIST ── */
+  .project-row {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s; cursor: pointer;
+    margin-bottom: 0.5rem;
+  }
+
+  .project-row:hover {
+    background: rgba(201,168,76,0.06);
+    border-color: var(--border);
+  }
+
+  .project-row.header {
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--gray); letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: default;
+    margin-bottom: 0.25rem;
+  }
+  .project-row.header:hover { background: transparent; border-color: transparent; }
+
+  .project-name { font-weight: 600; font-size: 0.95rem; }
+  .project-dept { font-size: 0.8rem; color: var(--gray); margin-top: 2px; }
+
+  /* ── STATS ── */
+  .stat-card {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 2.2rem; font-weight: 700;
+    color: var(--gold); line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 0.8rem; color: var(--gray); }
+
+  /* ── AI PANEL ── */
+  .ai-panel {
+    background: linear-gradient(135deg, rgba(17,34,64,0.9), rgba(10,22,40,0.95));
+    border: 1px solid rgba(45,212,191,0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+
+  .ai-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .ai-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 10px rgba(45,212,191,0.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .ai-title { font-size: 0.95rem; font-weight: 600; color: var(--teal); }
+
+  .ai-output {
+    font-size: 0.875rem; line-height: 1.75;
+    color: rgba(248,250,252,0.85);
+    white-space: pre-wrap;
+    min-height: 60px;
+  }
+
+  .ai-loading {
+    display: flex; gap: 6px; align-items: center;
+    padding: 12px 0;
+  }
+
+  .ai-dot-anim {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal); opacity: 0.4;
+    animation: dotBounce 1.2s infinite;
+  }
+
+  .ai-dot-anim:nth-child(2) { animation-delay: 0.2s; }
+  .ai-dot-anim:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-8px); opacity: 1; }
+  }
+
+  /* ── SCORE BARS ── */
+  .score-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .score-label { font-size: 0.8rem; color: var(--gray); width: 130px; flex-shrink: 0; }
+
+  .score-bar-track {
+    flex: 1; height: 6px; border-radius: 99px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+    transition: width 1s ease;
+  }
+
+  .score-value { font-size: 0.8rem; font-weight: 700; color: var(--teal); width: 32px; text-align: right; }
+
+  /* ── RISK MATRIX ── */
+  .risk-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 600; margin: 3px;
+  }
+
+  .risk-high { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .risk-mid { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .risk-low { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+
+  /* ── BOARD SUMMARY ── */
+  .summary-section {
+    border-left: 3px solid var(--gold);
+    padding-left: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .summary-section-title {
+    font-weight: 700; color: var(--gold-light);
+    font-size: 0.95rem; margin-bottom: 0.5rem;
+  }
+
+  .summary-section p {
+    font-size: 0.875rem; color: rgba(248,250,252,0.8);
+    line-height: 1.7;
+  }
+
+  /* ── STEP INDICATOR ── */
+  .steps {
+    display: flex; align-items: center;
+    margin-bottom: 2rem; gap: 0;
+  }
+
+  .step {
+    display: flex; align-items: center; gap: 10px;
+    flex: 1;
+  }
+
+  .step-circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid rgba(201,168,76,0.3);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; color: var(--gray);
+    flex-shrink: 0; transition: all 0.3s;
+  }
+
+  .step.done .step-circle {
+    background: var(--gold); border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  .step.active .step-circle {
+    border-color: var(--gold); color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.15);
+  }
+
+  .step-label { font-size: 0.8rem; color: var(--gray); }
+  .step.active .step-label, .step.done .step-label { color: var(--gold-light); font-weight: 600; }
+
+  .step-line {
+    flex: 1; height: 1px;
+    background: rgba(201,168,76,0.2);
+    margin: 0 8px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  /* ── CLUSTER CARD ── */
+  .cluster-card {
+    background: rgba(45,212,191,0.06);
+    border: 1px solid rgba(45,212,191,0.2);
+    border-radius: 12px; padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .cluster-title { font-weight: 700; color: var(--teal); margin-bottom: 0.5rem; font-size: 0.95rem; }
+  .cluster-projects { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+  .proj-chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px;
+    font-size: 0.78rem; color: var(--white);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 99px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(5,15,30,0.85); z-index: 200;
+    backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 2rem;
+    width: 90%; max-width: 640px;
+    max-height: 85vh; overflow-y: auto;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-title { font-family: 'Noto Serif Thai', serif; font-size: 1.2rem; color: var(--gold); }
+
+  .modal-close {
+    background: rgba(255,255,255,0.08); border: none;
+    width: 32px; height: 32px; border-radius: 8px;
+    color: var(--gray); cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: rgba(239,68,68,0.2); color: var(--red); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .project-row { grid-template-columns: 1fr auto; }
+    .project-row > *:nth-child(2),
+    .project-row > *:nth-child(3),
+    .project-row > *:nth-child(4) { display: none; }
+    nav { padding: 0 1rem; }
+    .page { padding: 1rem; }
+    .nav-tab { padding: 8px 12px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-icon">◆</div>
+    Strategic Portfolio
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchPage('dashboard')">ภาพรวม</button>
+    <button class="nav-tab" onclick="switchPage('new-project')">+ โครงการใหม่</button>
+    <button class="nav-tab" onclick="switchPage('analysis')">AI วิเคราะห์ <span class="badge" id="cluster-badge" style="display:none">!</span></button>
+    <button class="nav-tab" onclick="switchPage('board')">Board สรุป</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     PAGE 1: DASHBOARD
+════════════════════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="page-title">📊 Portfolio Overview</div>
+  <div class="page-sub">ภาพรวมโครงการทั้งหมดเทียบกับ Vision / Mission องค์กร</div>
+
+  <!-- Vision Mission -->
+  <div class="card" style="margin-bottom:1.5rem; border-color: rgba(201,168,76,0.4)">
+    <div class="card-title">🎯 Vision & Mission</div>
+    <div class="grid-2">
+      <div>
+        <div class="form-label">Vision</div>
+        <div id="vision-display" style="font-size:0.9rem; color:rgba(248,250,252,0.8); line-height:1.6">—</div>
+      </div>
+      <div>
+        <div class="form-label">Mission</div>
+        <div id="mission-display" style="font-size:0.9rem; color:rgba(248,250,252,0.8); line-height:1.6">—</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">ตั้งค่า Vision</label>
+        <input class="form-input" id="vision-input" placeholder="เช่น เป็นองค์กรชั้นนำด้านนวัตกรรม..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">ตั้งค่า Mission</label>
+        <input class="form-input" id="mission-input" placeholder="เช่น สร้างคุณค่าให้ลูกค้าด้วยเทคโนโลยี..." />
+      </div>
+    </div>
+    <button class="btn btn-gold btn-sm" onclick="saveVisionMission()">💾 บันทึก</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid-3" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-number" id="stat-total">0</div>
+      <div class="stat-label">โครงการทั้งหมด</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-review" style="color:var(--amber)">0</div>
+      <div class="stat-label">รอพิจารณา</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-approved" style="color:var(--green)">0</div>
+      <div class="stat-label">อนุมัติแล้ว</div>
+    </div>
+  </div>
+
+  <!-- Project List -->
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span>📋 รายการโครงการ</span>
+      <button class="btn btn-gold btn-sm" onclick="switchPage('new-project')">+ เพิ่มโครงการ</button>
+    </div>
+    <div class="project-row header">
+      <span>ชื่อโครงการ / ฝ่าย</span>
+      <span>งบประมาณ</span>
+      <span>ความคุ้มค่า</span>
+      <span>สถานะ</span>
+      <span></span>
+    </div>
+    <div id="project-list">
+      <div style="text-align:center; padding:2rem; color:var(--gray); font-size:0.9rem">
+        ยังไม่มีโครงการ — คลิก <strong style="color:var(--gold)">+ เพิ่มโครงการ</strong> เพื่อเริ่ม
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 2: NEW PROJECT FORM
+════════════════════════════════════════════ -->
+<div class="page" id="page-new-project">
+  <div class="page-title">📝 แบบฟอร์มโครงการ</div>
+  <div class="page-sub">กรอกข้อมูลโครงการให้ครบถ้วน จากนั้น AI จะช่วยวิเคราะห์</div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step active" id="step-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">ข้อมูลพื้นฐาน</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">ผลลัพธ์ & ความเสี่ยง</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">ทรัพยากร & การเงิน</div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <div id="form-section-1">
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">📌 ข้อมูลพื้นฐาน</div>
+        <div class="form-group">
+          <label class="form-label">ชื่อโครงการ *</label>
+          <input class="form-input" id="f-name" placeholder="ระบุชื่อโครงการ" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ฝ่าย / หน่วยงานเจ้าของโครงการ *</label>
+          <input class="form-input" id="f-dept" placeholder="เช่น ฝ่ายเทคโนโลยีสารสนเทศ" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ลักษณะโครงการ *</label>
+          <select class="form-select" id="f-type">
+            <option value="">— เลือก —</option>
+            <option>นวัตกรรม / Digital Transformation</option>
+            <option>ปรับปรุงกระบวนการ (Process Improvement)</option>
+            <option>ลดต้นทุน (Cost Reduction)</option>
+            <option>เพิ่มรายได้ (Revenue Growth)</option>
+            <option>ความปลอดภัย / Compliance</option>
+            <option>พัฒนาบุคลากร (HR Development)</option>
+            <option>โครงสร้างพื้นฐาน (Infrastructure)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ระยะเวลาโครงการ</label>
+          <input class="form-input" id="f-duration" placeholder="เช่น 12 เดือน (ม.ค.-ธ.ค. 68)" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 วัตถุประสงค์</div>
+        <div class="form-group">
+          <label class="form-label">วัตถุประสงค์หลัก *</label>
+          <textarea class="form-textarea" id="f-objective" placeholder="อธิบายวัตถุประสงค์โครงการ เชื่อมโยงกับ Vision/Mission..." style="min-height:100px"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ความสอดคล้องกับ Strategy</label>
+          <select class="form-select" id="f-strategy">
+            <option value="">— เลือก —</option>
+            <option>Growth Strategy</option>
+            <option>Efficiency Strategy</option>
+            <option>Customer Experience</option>
+            <option>Digital Strategy</option>
+            <option>Risk Management</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ผู้ได้รับผลประโยชน์ (Stakeholders)</label>
+          <input class="form-input" id="f-stakeholders" placeholder="เช่น ลูกค้า, พนักงาน, ผู้บริหาร" />
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <button class="btn btn-gold" onclick="nextSection(2)">ถัดไป →</button>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div id="form-section-2" style="display:none">
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">📈 ผลลัพธ์ & ค่าเป้าหมาย</div>
+        <div class="form-group">
+          <label class="form-label">KPI หลัก / ตัวชี้วัด</label>
+          <textarea class="form-textarea" id="f-kpi" placeholder="เช่น ลดเวลาประมวลผล 30%, เพิ่ม NPS 10 คะแนน..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ผลลัพธ์ที่คาดหวัง (Expected Outcomes)</label>
+          <textarea class="form-textarea" id="f-outcomes" placeholder="อธิบายผลลัพธ์ที่จะเกิดขึ้นเมื่อโครงการสำเร็จ..."></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ ความเสี่ยง</div>
+        <div class="form-group">
+          <label class="form-label">ความเสี่ยงหลักของโครงการ</label>
+          <textarea class="form-textarea" id="f-risks" placeholder="เช่น ความเสี่ยงด้านเทคโนโลยี, บุคลากร, งบประมาณ, กฎระเบียบ..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ระดับความเสี่ยงโดยรวม</label>
+          <select class="form-select" id="f-risk-level">
+            <option value="">— เลือก —</option>
+            <option value="low">ต่ำ (Low)</option>
+            <option value="medium">ปานกลาง (Medium)</option>
+            <option value="high">สูง (High)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">แผนจัดการความเสี่ยง</label>
+          <textarea class="form-textarea" id="f-risk-mitigation" placeholder="อธิบายวิธีจัดการความเสี่ยงแต่ละด้าน..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; gap:1rem; justify-content:space-between">
+      <button class="btn btn-outline" onclick="nextSection(1)">← ย้อนกลับ</button>
+      <button class="btn btn-gold" onclick="nextSection(3)">ถัดไป →</button>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div id="form-section-3" style="display:none">
+    <div class="grid-2" style="margin-bottom:1.5rem">
+      <div class="card">
+        <div class="card-title">💻 ความต้องการด้าน IT</div>
+        <div class="form-group">
+          <label class="form-label">ระบบ / Platform ที่ต้องการ</label>
+          <textarea class="form-textarea" id="f-it-systems" placeholder="เช่น ERP Module, Cloud Infrastructure, API Integration..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">งบประมาณ IT (ล้านบาท)</label>
+          <input class="form-input" id="f-it-budget" type="number" placeholder="0.00" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ความซับซ้อนด้าน IT</label>
+          <select class="form-select" id="f-it-complexity">
+            <option value="">— เลือก —</option>
+            <option value="low">ต่ำ — ใช้ระบบที่มีอยู่</option>
+            <option value="medium">ปานกลาง — ปรับแต่งระบบเดิม</option>
+            <option value="high">สูง — พัฒนาระบบใหม่</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">👥 ความต้องการด้านบุคลากร</div>
+        <div class="form-group">
+          <label class="form-label">จำนวน FTE ที่ต้องการ</label>
+          <input class="form-input" id="f-fte" type="number" placeholder="เช่น 5" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">ทักษะที่ต้องการ</label>
+          <textarea class="form-textarea" id="f-skills" placeholder="เช่น Data Analyst, Project Manager, Developer..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">แผนพัฒนาบุคลากร</label>
+          <input class="form-input" id="f-training" placeholder="เช่น Training 40 ชม., Hire 2 คน" />
+        </div>
+      </div>
+
+      <div class="card col-span-2">
+        <div class="card-title">💰 ความคุ้มค่า Financial & Non-Financial</div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">งบประมาณรวม (ล้านบาท)</label>
+            <input class="form-input" id="f-budget" type="number" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ผลตอบแทนที่คาดหวัง ROI (%)</label>
+            <input class="form-input" id="f-roi" type="number" placeholder="เช่น 150" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ระยะคืนทุน (เดือน)</label>
+            <input class="form-input" id="f-payback" type="number" placeholder="เช่น 24" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ผลประโยชน์ที่ไม่ใช่ตัวเงิน (Non-Financial Benefits)</label>
+          <textarea class="form-textarea" id="f-non-financial" placeholder="เช่น เพิ่มความพึงพอใจพนักงาน, ลดความเสี่ยงองค์กร, เสริมภาพลักษณ์..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:1rem; justify-content:space-between; align-items:center">
+      <button class="btn btn-outline" onclick="nextSection(2)">← ย้อนกลับ</button>
+      <div style="display:flex; gap:1rem">
+        <button class="btn btn-outline" onclick="saveProject('draft')">💾 บันทึกร่าง</button>
+        <button class="btn btn-teal" onclick="saveAndAnalyze()">🤖 บันทึก & ให้ AI วิเคราะห์</button>
+        <button class="btn btn-gold" onclick="saveProject('review')">📤 ส่งพิจารณา</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 3: AI ANALYSIS
+════════════════════════════════════════════ -->
+<div class="page" id="page-analysis">
+  <div class="page-title">🤖 AI วิเคราะห์ Portfolio</div>
+  <div class="page-sub">วิเคราะห์โครงการที่คล้ายกัน เสนอการรวมกลุ่ม และจัดสรรทรัพยากรให้คุ้มค่า</div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem">
+    <div class="card" style="display:flex; flex-direction:column; gap:0.75rem">
+      <div class="card-title">⚙️ ตั้งค่าการวิเคราะห์</div>
+      <div class="form-group">
+        <label class="form-label">เกณฑ์หลักในการวิเคราะห์</label>
+        <select class="form-select" id="analysis-focus">
+          <option>ความคล้ายคลึงและการรวมโครงการ</option>
+          <option>ลำดับความสำคัญตาม ROI</option>
+          <option>การใช้ทรัพยากร IT</option>
+          <option>ความสอดคล้องกับ Strategy</option>
+          <option>ระดับความเสี่ยง</option>
+        </select>
+      </div>
+      <button class="btn btn-teal" onclick="runAIAnalysis()" style="width:fit-content">
+        🤖 วิเคราะห์ด้วย AI
+      </button>
+    </div>
+
+    <div class="ai-panel" id="ai-status-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <div class="ai-title">AI Analysis Engine</div>
+      </div>
+      <div class="ai-output" id="ai-status-text" style="color:var(--gray); font-size:0.85rem">
+กดปุ่ม "วิเคราะห์ด้วย AI" เพื่อเริ่มการวิเคราะห์โครงการทั้งหมดใน Portfolio
+      </div>
+    </div>
+  </div>
+
+  <div id="analysis-results" style="display:none">
+    <!-- Cluster Analysis -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">🔗 กลุ่มโครงการที่สามารถรวมกัน (Clustering)</div>
+      <div id="cluster-results"></div>
+    </div>
+
+    <!-- Score Table -->
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">📊 คะแนนความคุ้มค่าแต่ละโครงการ</div>
+      <div id="score-results"></div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="ai-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <div class="ai-title">ข้อเสนอแนะ AI</div>
+      </div>
+      <div class="ai-output" id="ai-recommendations"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 4: BOARD SUMMARY
+════════════════════════════════════════════ -->
+<div class="page" id="page-board">
+  <div class="page-title">📋 สรุปเพื่อเสนอ Board</div>
+  <div class="page-sub">Executive Summary สำหรับการประชุมพิจารณาอนุมัติโครงการ</div>
+
+  <div style="margin-bottom:1.5rem; display:flex; gap:1rem; flex-wrap:wrap">
+    <button class="btn btn-teal" onclick="generateBoardSummary()">🤖 สร้างสรุปด้วย AI</button>
+    <button class="btn btn-gold" onclick="exportSummary()">📄 Export PDF/Word</button>
+    <select class="form-select" id="board-filter" style="width:auto; padding:8px 16px">
+      <option value="all">ทุกโครงการ</option>
+      <option value="review">เฉพาะรอพิจารณา</option>
+    </select>
+  </div>
+
+  <div id="board-content">
+    <div class="card">
+      <div style="text-align:center; padding:2rem; color:var(--gray)">
+        กด <strong style="color:var(--teal)">สร้างสรุปด้วย AI</strong> เพื่อสร้าง Executive Summary
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ PROJECT DETAIL MODAL ════════════ -->
+<div class="modal-overlay" id="project-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">รายละเอียดโครงการ</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <hr class="divider">
+    <div style="display:flex; gap:1rem; justify-content:flex-end; flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">ปิด</button>
+      <button class="btn btn-teal btn-sm" id="modal-analyze-btn">🤖 AI วิเคราะห์เดี่ยว</button>
+      <button class="btn btn-gold btn-sm" id="modal-approve-btn">✅ อนุมัติ</button>
+    </div>
+    <div class="ai-panel" style="margin-top:1rem; display:none" id="modal-ai-panel">
+      <div class="ai-header">
+        <div class="ai-dot"></div>
+        <div class="ai-title">AI วิเคราะห์โครงการนี้</div>
+      </div>
+      <div class="ai-output" id="modal-ai-output"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let projects = JSON.parse(localStorage.getItem('spm_projects') || '[]');
+let currentPage = 'dashboard';
+let currentModal = null;
+let cloudReady = false;
+
+const API_KEY_HINT = ""; // handled server-side via cors proxy
+
+function canUseAppsScript() {
+  return typeof google !== 'undefined' && google.script && google.script.run;
+}
+
+function getPortfolioState() {
+  return {
+    vision: localStorage.getItem('spm_vision') || '',
+    mission: localStorage.getItem('spm_mission') || '',
+    projects,
+  };
+}
+
+function applyPortfolioState(state) {
+  if (!state) return;
+  if (typeof state.vision === 'string') localStorage.setItem('spm_vision', state.vision);
+  if (typeof state.mission === 'string') localStorage.setItem('spm_mission', state.mission);
+  if (Array.isArray(state.projects)) {
+    projects = state.projects;
+    localStorage.setItem('spm_projects', JSON.stringify(projects));
+  }
+}
+
+function syncToGoogleSheet() {
+  if (!canUseAppsScript() || !cloudReady) return;
+  google.script.run
+    .withFailureHandler(err => console.error('Google Sheet sync failed', err))
+    .savePortfolio(getPortfolioState());
+}
+
+function initializeCloudSync() {
+  if (!canUseAppsScript()) return;
+  google.script.run
+    .withSuccessHandler(({ data }) => {
+      const hasLocalData = projects.length || localStorage.getItem('spm_vision') || localStorage.getItem('spm_mission');
+      const hasCloudData = data && (data.projects?.length || data.vision || data.mission);
+
+      if (hasCloudData) {
+        applyPortfolioState(data);
+      }
+
+      cloudReady = true;
+
+      if (!hasCloudData && hasLocalData) {
+        syncToGoogleSheet();
+      }
+
+      renderDashboard();
+    })
+    .withFailureHandler(err => {
+      console.error('Cloud init failed', err);
+      renderDashboard();
+    })
+    .initializeApp();
+}
+
+// ══════════════════════════════════════
+// NAV
+// ══════════════════════════════════════
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.getAttribute('onclick').includes("'" + page + "'")) t.classList.add('active');
+  });
+  currentPage = page;
+  if (page === 'dashboard') renderDashboard();
+}
+
+// ══════════════════════════════════════
+// VISION / MISSION
+// ══════════════════════════════════════
+function saveVisionMission() {
+  const v = document.getElementById('vision-input').value.trim();
+  const m = document.getElementById('mission-input').value.trim();
+  if (v) localStorage.setItem('spm_vision', v);
+  if (m) localStorage.setItem('spm_mission', m);
+  renderVisionMission();
+  syncToGoogleSheet();
+}
+
+function renderVisionMission() {
+  const v = localStorage.getItem('spm_vision') || '—';
+  const m = localStorage.getItem('spm_mission') || '—';
+  document.getElementById('vision-display').textContent = v;
+  document.getElementById('mission-display').textContent = m;
+  document.getElementById('vision-input').value = v === '—' ? '' : v;
+  document.getElementById('mission-input').value = m === '—' ? '' : m;
+}
+
+// ══════════════════════════════════════
+// FORM STEPS
+// ══════════════════════════════════════
+function nextSection(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('form-section-' + i).style.display = i === n ? 'block' : 'none';
+    const step = document.getElementById('step-' + i);
+    step.classList.remove('active','done');
+    if (i < n) step.classList.add('done');
+    if (i === n) step.classList.add('active');
+  });
+}
+
+// ══════════════════════════════════════
+// SAVE PROJECT
+// ══════════════════════════════════════
+function collectForm() {
+  return {
+    id: Date.now(),
+    name: document.getElementById('f-name').value.trim(),
+    dept: document.getElementById('f-dept').value.trim(),
+    type: document.getElementById('f-type').value,
+    duration: document.getElementById('f-duration').value.trim(),
+    objective: document.getElementById('f-objective').value.trim(),
+    strategy: document.getElementById('f-strategy').value,
+    stakeholders: document.getElementById('f-stakeholders').value.trim(),
+    kpi: document.getElementById('f-kpi').value.trim(),
+    outcomes: document.getElementById('f-outcomes').value.trim(),
+    risks: document.getElementById('f-risks').value.trim(),
+    riskLevel: document.getElementById('f-risk-level').value,
+    riskMitigation: document.getElementById('f-risk-mitigation').value.trim(),
+    itSystems: document.getElementById('f-it-systems').value.trim(),
+    itBudget: document.getElementById('f-it-budget').value,
+    itComplexity: document.getElementById('f-it-complexity').value,
+    fte: document.getElementById('f-fte').value,
+    skills: document.getElementById('f-skills').value.trim(),
+    training: document.getElementById('f-training').value.trim(),
+    budget: document.getElementById('f-budget').value,
+    roi: document.getElementById('f-roi').value,
+    payback: document.getElementById('f-payback').value,
+    nonFinancial: document.getElementById('f-non-financial').value.trim(),
+    createdAt: new Date().toLocaleDateString('th-TH'),
+  };
+}
+
+function saveProject(status) {
+  const p = collectForm();
+  if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
+  p.status = status;
+  projects.push(p);
+  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  syncToGoogleSheet();
+  clearForm();
+  switchPage('dashboard');
+  renderDashboard();
+}
+
+async function saveAndAnalyze() {
+  const p = collectForm();
+  if (!p.name) { alert('กรุณาระบุชื่อโครงการ'); return; }
+  p.status = 'review';
+  projects.push(p);
+  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  syncToGoogleSheet();
+  clearForm();
+  switchPage('analysis');
+  await runAIAnalysis();
+}
+
+function clearForm() {
+  ['f-name','f-dept','f-type','f-duration','f-objective','f-strategy','f-stakeholders',
+   'f-kpi','f-outcomes','f-risks','f-risk-level','f-risk-mitigation',
+   'f-it-systems','f-it-budget','f-it-complexity','f-fte','f-skills','f-training',
+   'f-budget','f-roi','f-payback','f-non-financial'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  nextSection(1);
+}
+
+// ══════════════════════════════════════
+// RENDER DASHBOARD
+// ══════════════════════════════════════
+function renderDashboard() {
+  renderVisionMission();
+  document.getElementById('stat-total').textContent = projects.length;
+  document.getElementById('stat-review').textContent = projects.filter(p => p.status === 'review').length;
+  document.getElementById('stat-approved').textContent = projects.filter(p => p.status === 'approved').length;
+
+  const list = document.getElementById('project-list');
+  if (!projects.length) {
+    list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--gray);font-size:0.9rem">
+      ยังไม่มีโครงการ — คลิก <strong style="color:var(--gold)">+ เพิ่มโครงการ</strong> เพื่อเริ่ม</div>`;
+    return;
+  }
+
+  const statusMap = {draft:'badge-draft draft',review:'badge-review review',approved:'badge-approved approved',rejected:'badge-rejected rejected'};
+  const statusLabel = {draft:'ร่าง',review:'รอพิจารณา',approved:'อนุมัติ',rejected:'ปฏิเสธ'};
+  const riskMap = {low:'risk-low',medium:'risk-mid',high:'risk-high'};
+
+  list.innerHTML = projects.map((p,i) => `
+    <div class="project-row" onclick="openModal(${i})">
+      <div>
+        <div class="project-name">${p.name}</div>
+        <div class="project-dept">${p.dept || '—'} · ${p.type || '—'}</div>
+      </div>
+      <div style="font-size:0.9rem">${p.budget ? parseFloat(p.budget).toFixed(1) + ' ล้านบาท' : '—'}</div>
+      <div style="font-size:0.9rem">${p.roi ? 'ROI ' + p.roi + '%' : '—'}</div>
+      <div><span class="badge-status ${statusMap[p.status] || 'badge-draft draft'}">${statusLabel[p.status] || p.status}</span></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();deleteProject(${i})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function deleteProject(i) {
+  if (!confirm('ลบโครงการนี้?')) return;
+  projects.splice(i,1);
+  localStorage.setItem('spm_projects', JSON.stringify(projects));
+  syncToGoogleSheet();
+  renderDashboard();
+}
+
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+function openModal(i) {
+  currentModal = i;
+  const p = projects[i];
+  document.getElementById('modal-title').textContent = p.name;
+  document.getElementById('modal-ai-panel').style.display = 'none';
+  document.getElementById('modal-ai-output').textContent = '';
+
+  const rows = [
+    ['ฝ่าย', p.dept], ['ลักษณะโครงการ', p.type], ['ระยะเวลา', p.duration],
+    ['วัตถุประสงค์', p.objective], ['Strategy', p.strategy],
+    ['KPI', p.kpi], ['ผลลัพธ์', p.outcomes],
+    ['ความเสี่ยง', p.risks], ['ระดับความเสี่ยง', p.riskLevel],
+    ['IT ที่ต้องการ', p.itSystems], ['งบ IT', p.itBudget ? p.itBudget + ' ล้านบาท' : '—'],
+    ['FTE', p.fte], ['ทักษะ', p.skills],
+    ['งบรวม', p.budget ? p.budget + ' ล้านบาท' : '—'],
+    ['ROI', p.roi ? p.roi + '%' : '—'], ['ระยะคืนทุน', p.payback ? p.payback + ' เดือน' : '—'],
+    ['Non-Financial', p.nonFinancial],
+  ].filter(r => r[1]);
+
+  document.getElementById('modal-body').innerHTML = rows.map(([l,v]) => `
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,0.1)">
+      <div style="font-size:0.8rem;color:var(--gold-light);font-weight:600">${l}</div>
+      <div style="font-size:0.85rem;color:rgba(248,250,252,0.85)">${v}</div>
+    </div>`).join('');
+
+  document.getElementById('modal-approve-btn').onclick = () => {
+    projects[i].status = 'approved';
+    localStorage.setItem('spm_projects', JSON.stringify(projects));
+    syncToGoogleSheet();
+    closeModal(); renderDashboard();
+  };
+  document.getElementById('modal-analyze-btn').onclick = () => analyzeProject(i);
+  document.getElementById('project-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('project-modal').classList.remove('open');
+}
+
+// ══════════════════════════════════════
+// AI CALL HELPER
+// ══════════════════════════════════════
+async function callAI(prompt, outputEl, loadingEl) {
+  if (loadingEl) {
+    loadingEl.innerHTML = `<div class="ai-loading">
+      <div class="ai-dot-anim"></div><div class="ai-dot-anim"></div><div class="ai-dot-anim"></div>
+      <span style="font-size:0.8rem;color:var(--gray);margin-left:4px">AI กำลังวิเคราะห์...</span>
+    </div>`;
+  }
+  if (outputEl) outputEl.textContent = '';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || 'ไม่สามารถรับคำตอบจาก AI ได้';
+    if (loadingEl) loadingEl.innerHTML = '';
+    if (outputEl) outputEl.textContent = text;
+    return text;
+  } catch (e) {
+    const errMsg = '⚠️ ไม่สามารถเชื่อมต่อ AI API ได้ กรุณาลองใหม่';
+    if (loadingEl) loadingEl.innerHTML = '';
+    if (outputEl) outputEl.textContent = errMsg;
+    return errMsg;
+  }
+}
+
+// ══════════════════════════════════════
+// AI: ANALYZE SINGLE PROJECT
+// ══════════════════════════════════════
+async function analyzeProject(i) {
+  const p = projects[i];
+  const panel = document.getElementById('modal-ai-panel');
+  const out = document.getElementById('modal-ai-output');
+  panel.style.display = 'block';
+
+  const vision = localStorage.getItem('spm_vision') || 'ไม่ระบุ';
+  const mission = localStorage.getItem('spm_mission') || 'ไม่ระบุ';
+
+  const prompt = `คุณเป็นที่ปรึกษาด้านการบริหารโครงการเชิงกลยุทธ์ขององค์กร
+Vision: ${vision}
+Mission: ${mission}
+
+วิเคราะห์โครงการต่อไปนี้และให้คะแนน (1-10) พร้อมความเห็นสั้น ๆ ในแต่ละด้าน:
+
+ชื่อโครงการ: ${p.name}
+วัตถุประสงค์: ${p.objective}
+ลักษณะ: ${p.type}
+KPI: ${p.kpi}
+ความเสี่ยง: ${p.risks} (ระดับ: ${p.riskLevel})
+ความต้องการ IT: ${p.itSystems}
+งบรวม: ${p.budget} ล้านบาท
+ROI: ${p.roi}%
+Non-Financial: ${p.nonFinancial}
+
+กรุณาวิเคราะห์ใน 5 ด้าน:
+1. ความสอดคล้องกับ Vision/Mission (คะแนน X/10): ...
+2. ความคุ้มค่าทางการเงิน (คะแนน X/10): ...
+3. ความเป็นไปได้และความเสี่ยง (คะแนน X/10): ...
+4. ผลกระทบเชิงกลยุทธ์ (คะแนน X/10): ...
+5. ความพร้อมด้านทรัพยากร (คะแนน X/10): ...
+
+สรุป: ข้อเสนอแนะสำหรับ Board (2-3 ประโยค)
+ตอบเป็นภาษาไทย กระชับ`;
+
+  await callAI(prompt, out, out);
+}
+
+// ══════════════════════════════════════
+// AI: PORTFOLIO ANALYSIS
+// ══════════════════════════════════════
+async function runAIAnalysis() {
+  if (!projects.length) {
+    document.getElementById('ai-status-text').textContent = 'ยังไม่มีโครงการในระบบ กรุณาเพิ่มโครงการก่อน';
+    return;
+  }
+
+  const focus = document.getElementById('analysis-focus').value;
+  const vision = localStorage.getItem('spm_vision') || 'ไม่ระบุ';
+  const statusEl = document.getElementById('ai-status-text');
+  document.getElementById('analysis-results').style.display = 'none';
+
+  const projectList = projects.map((p,i) => 
+    `[${i+1}] ${p.name} | ฝ่าย: ${p.dept} | ประเภท: ${p.type} | งบ: ${p.budget}M | ROI: ${p.roi}% | IT: ${p.itSystems} | วัตถุประสงค์: ${p.objective}`
+  ).join('\n');
+
+  const prompt = `คุณเป็น Portfolio Manager เชิงกลยุทธ์
+Vision: ${vision}
+เกณฑ์วิเคราะห์หลัก: ${focus}
+
+โครงการทั้งหมดในระบบ:
+${projectList}
+
+กรุณาวิเคราะห์และตอบในรูปแบบ JSON เท่านั้น ไม่ต้องมีข้อความอื่น:
+{
+  "clusters": [
+    {"title": "ชื่อกลุ่ม", "reason": "เหตุผลที่รวมกัน", "projectIds": [1,2], "savings": "ประมาณการประหยัด"}
+  ],
+  "scores": [
+    {"id": 1, "name": "ชื่อโครงการ", "strategic": 8, "financial": 7, "risk": 6, "feasibility": 9, "priority": "สูง"}
+  ],
+  "recommendations": "ข้อเสนอแนะภาพรวม 3-5 ข้อ สำหรับ Board พิจารณา (ภาษาไทย)"
+}`;
+
+  statusEl.innerHTML = `<div class="ai-loading">
+    <div class="ai-dot-anim"></div><div class="ai-dot-anim"></div><div class="ai-dot-anim"></div>
+    <span style="font-size:0.8rem;color:var(--gray);margin-left:8px">กำลังวิเคราะห์ ${projects.length} โครงการ...</span>
+  </div>`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || '{}';
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    } catch {
+      parsed = { clusters: [], scores: [], recommendations: text };
+    }
+
+    statusEl.textContent = `✅ วิเคราะห์สำเร็จ — พบ ${parsed.clusters?.length || 0} กลุ่มที่สามารถรวมกันได้`;
+    renderAnalysisResults(parsed);
+
+    if (parsed.clusters?.length) {
+      document.getElementById('cluster-badge').style.display = 'flex';
+    }
+  } catch(e) {
+    statusEl.textContent = '⚠️ ไม่สามารถเชื่อมต่อ AI API ได้ กรุณาลองใหม่';
+  }
+}
+
+function renderAnalysisResults(data) {
+  const wrap = document.getElementById('analysis-results');
+  wrap.style.display = 'block';
+
+  // Clusters
+  const clusterEl = document.getElementById('cluster-results');
+  if (!data.clusters?.length) {
+    clusterEl.innerHTML = '<p style="color:var(--gray);font-size:0.9rem">ไม่พบโครงการที่สามารถรวมกันได้ในขณะนี้</p>';
+  } else {
+    clusterEl.innerHTML = data.clusters.map(c => `
+      <div class="cluster-card">
+        <div class="cluster-title">🔗 ${c.title}</div>
+        <div style="font-size:0.85rem;color:rgba(248,250,252,0.8);margin-bottom:6px">${c.reason}</div>
+        ${c.savings ? `<div style="font-size:0.8rem;color:var(--green)">💰 ประมาณการประหยัด: ${c.savings}</div>` : ''}
+        <div class="cluster-projects">
+          ${(c.projectIds||[]).map(id => {
+            const p = projects[id-1];
+            return p ? `<span class="proj-chip">${p.name}</span>` : '';
+          }).join('')}
+        </div>
+      </div>`).join('');
+  }
+
+  // Scores
+  const scoreEl = document.getElementById('score-results');
+  const priorityColor = {สูง:'var(--green)', ปานกลาง:'var(--amber)', ต่ำ:'var(--red)'};
+  scoreEl.innerHTML = (data.scores||[]).map(s => `
+    <div style="margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+        <div style="font-weight:600;font-size:0.95rem">${s.name}</div>
+        <div style="font-size:0.8rem;font-weight:700;color:${priorityColor[s.priority]||'var(--gray)'}">
+          ลำดับความสำคัญ: ${s.priority}
+        </div>
+      </div>
+      <div class="score-row"><div class="score-label">เชิงกลยุทธ์</div>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${(s.strategic||0)*10}%"></div></div>
+        <div class="score-value">${s.strategic||0}</div></div>
+      <div class="score-row"><div class="score-label">การเงิน</div>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${(s.financial||0)*10}%;background:linear-gradient(90deg,var(--gold),var(--gold-light))"></div></div>
+        <div class="score-value" style="color:var(--gold)">${s.financial||0}</div></div>
+      <div class="score-row"><div class="score-label">ความเสี่ยง</div>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${(s.risk||0)*10}%;background:linear-gradient(90deg,#f59e0b,#fcd34d)"></div></div>
+        <div class="score-value" style="color:var(--amber)">${s.risk||0}</div></div>
+      <div class="score-row"><div class="score-label">ความเป็นไปได้</div>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${(s.feasibility||0)*10}%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>
+        <div class="score-value" style="color:var(--green)">${s.feasibility||0}</div></div>
+    </div>`).join('');
+
+  document.getElementById('ai-recommendations').textContent = data.recommendations || '';
+}
+
+// ══════════════════════════════════════
+// BOARD SUMMARY
+// ══════════════════════════════════════
+async function generateBoardSummary() {
+  if (!projects.length) {
+    document.getElementById('board-content').innerHTML = `<div class="card"><div style="text-align:center;padding:2rem;color:var(--gray)">ยังไม่มีโครงการ</div></div>`;
+    return;
+  }
+
+  const filter = document.getElementById('board-filter').value;
+  const filtered = filter === 'review' ? projects.filter(p => p.status === 'review') : projects;
+  const vision = localStorage.getItem('spm_vision') || 'ไม่ระบุ';
+  const mission = localStorage.getItem('spm_mission') || 'ไม่ระบุ';
+
+  document.getElementById('board-content').innerHTML = `
+    <div class="ai-panel">
+      <div class="ai-header"><div class="ai-dot"></div><div class="ai-title">AI กำลังสร้างสรุปสำหรับ Board...</div></div>
+      <div class="ai-loading"><div class="ai-dot-anim"></div><div class="ai-dot-anim"></div><div class="ai-dot-anim"></div></div>
+    </div>`;
+
+  const summary = filtered.map(p =>
+    `- ${p.name} (${p.dept}): งบ ${p.budget||'N/A'}M, ROI ${p.roi||'N/A'}%, ความเสี่ยง ${p.riskLevel||'N/A'}, วัตถุประสงค์: ${p.objective}`
+  ).join('\n');
+
+  const prompt = `คุณเป็นที่ปรึกษาเชิงกลยุทธ์ที่เตรียมรายงานสรุปสำหรับ Board of Directors
+
+Vision: ${vision}
+Mission: ${mission}
+วันที่: ${new Date().toLocaleDateString('th-TH')}
+จำนวนโครงการ: ${filtered.length} โครงการ
+
+โครงการที่นำเสนอ:
+${summary}
+
+กรุณาสร้าง Executive Summary สำหรับ Board ที่ประกอบด้วย:
+1. ภาพรวม Portfolio (2-3 ประโยค)
+2. ข้อเสนอแนะเชิงกลยุทธ์ (3 ข้อ)
+3. โครงการที่ควรอนุมัติก่อน และเหตุผล
+4. ความเสี่ยงหลักที่ Board ต้องรับทราบ
+5. ผลตอบแทนรวมที่คาดหวัง (Financial + Non-Financial)
+
+ตอบเป็นภาษาไทย กระชับ มืออาชีพ`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+
+    const date = new Date().toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('board-content').innerHTML = `
+      <div class="card" style="margin-bottom:1rem; border-color:rgba(201,168,76,0.5)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <div>
+            <div style="font-family:'Noto Serif Thai',serif;font-size:1.3rem;color:var(--gold);font-weight:700">
+              Executive Summary — Strategic Project Portfolio
+            </div>
+            <div style="font-size:0.85rem;color:var(--gray);margin-top:4px">เสนอต่อ Board of Directors | ${date}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:1.5rem;font-weight:700;color:var(--gold)">${filtered.length}</div>
+            <div style="font-size:0.75rem;color:var(--gray)">โครงการ</div>
+          </div>
+        </div>
+        <div class="grid-3" style="margin-bottom:1.5rem">
+          <div class="stat-card">
+            <div class="stat-number" style="font-size:1.5rem">
+              ${filtered.reduce((s,p)=>s+(parseFloat(p.budget)||0),0).toFixed(1)}M
+            </div>
+            <div class="stat-label">งบประมาณรวม (ล้านบาท)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" style="font-size:1.5rem;color:var(--green)">
+              ${filtered.length ? Math.round(filtered.reduce((s,p)=>s+(parseFloat(p.roi)||0),0)/filtered.length) : 0}%
+            </div>
+            <div class="stat-label">ROI เฉลี่ย</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" style="font-size:1.5rem;color:var(--amber)">
+              ${filtered.filter(p=>p.riskLevel==='high').length}
+            </div>
+            <div class="stat-label">โครงการความเสี่ยงสูง</div>
+          </div>
+        </div>
+        <hr class="divider">
+        <div style="font-size:0.9rem;line-height:1.85;color:rgba(248,250,252,0.9);white-space:pre-wrap">${text}</div>
+      </div>`;
+  } catch(e) {
+    document.getElementById('board-content').innerHTML = `<div class="card"><div style="color:var(--red)">⚠️ ไม่สามารถเชื่อมต่อ AI ได้</div></div>`;
+  }
+}
+
+function exportSummary() {
+  window.print();
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderVisionMission();
+renderDashboard();
+initializeCloudSync();
+
+// Demo data prompt
+if (!projects.length) {
+  setTimeout(() => {
+    if (confirm('ต้องการโหลดข้อมูลตัวอย่าง (Demo Projects) เพื่อทดสอบระบบ?')) {
+      const demo = [
+        {id:1,name:'ระบบ ERP Cloud Migration',dept:'IT',type:'นวัตกรรม / Digital Transformation',duration:'18 เดือน',objective:'ย้ายระบบ ERP ไปยัง Cloud เพื่อลดต้นทุน IT และเพิ่มความยืดหยุ่น',strategy:'Digital Strategy',kpi:'ลดค่า IT 25%, เพิ่ม Uptime 99.9%',outcomes:'ระบบ Cloud พร้อมใช้งาน 24/7',risks:'Data Migration, Downtime',riskLevel:'high',itSystems:'SAP S/4HANA Cloud, AWS',itBudget:'15',itComplexity:'high',fte:'8',skills:'Cloud Architect, SAP Consultant',budget:'25',roi:'180',payback:'20',nonFinancial:'ลดการพึ่งพา On-premise',status:'review',createdAt:'1/5/2568'},
+        {id:2,name:'Digital Onboarding พนักงาน',dept:'HR',type:'ปรับปรุงกระบวนการ (Process Improvement)',duration:'6 เดือน',objective:'ปรับกระบวนการ Onboarding ให้เป็น Digital 100% ลดเอกสาร',strategy:'Efficiency Strategy',kpi:'ลดเวลา Onboarding 50%, NPS > 80',outcomes:'พนักงานใหม่ Onboard ได้ภายใน 1 วัน',risks:'Change Management',riskLevel:'low',itSystems:'HR Platform, E-Signature',itBudget:'3',itComplexity:'medium',fte:'3',skills:'HR Tech, UX Designer',budget:'5',roi:'200',payback:'8',nonFinancial:'ประสบการณ์พนักงานดีขึ้น',status:'review',createdAt:'2/5/2568'},
+        {id:3,name:'Platform HR Analytics',dept:'HR',type:'นวัตกรรม / Digital Transformation',duration:'12 เดือน',objective:'สร้าง Dashboard วิเคราะห์ข้อมูล HR เพื่อตัดสินใจด้านบุคลากร',strategy:'Digital Strategy',kpi:'ลดเวลาวิเคราะห์ HR 60%',outcomes:'ผู้บริหารเข้าถึงข้อมูล HR Real-time',risks:'Data Privacy, ทักษะ Data',riskLevel:'medium',itSystems:'Power BI, HR Data Lake',itBudget:'5',itComplexity:'medium',fte:'4',skills:'Data Analyst, HR Specialist',budget:'8',roi:'150',payback:'14',nonFinancial:'ตัดสินใจด้าน HR แม่นยำขึ้น',status:'draft',createdAt:'3/5/2568'},
+      ];
+      projects.push(...demo);
+      localStorage.setItem('spm_projects', JSON.stringify(projects));
+      localStorage.setItem('spm_vision', 'เป็นองค์กรดิจิทัลชั้นนำที่สร้างคุณค่าให้แก่ลูกค้าและสังคม');
+      localStorage.setItem('spm_mission', 'ขับเคลื่อนธุรกิจด้วยนวัตกรรมและเทคโนโลยี มุ่งพัฒนาบุคลากรและกระบวนการให้มีประสิทธิภาพ');
+      renderDashboard();
+    }
+  }, 800);
+}
+</script>
+</body>
+</html>
